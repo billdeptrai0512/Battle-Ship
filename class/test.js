@@ -71,7 +71,5 @@ it('should switch turn', () => {
     const playerA = new Player('bill')
     const playerB = new Player()
 
-
-
     expect(playerB.name).toMatch('Bot')
 })
