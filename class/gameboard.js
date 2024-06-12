@@ -1,5 +1,6 @@
 const Ship = require('./ship')
 
+
 class Gameboard {
     constructor(width, height) {
         this.width = width
@@ -18,47 +19,63 @@ class Gameboard {
         return this.board
     }
 
-    place(array1 = [], array2 = []) {
+    place(array = [], length = Number, row = Boolean) {
+
+        if (this.board[array[0]][array[1]] !== null) {
+            return
+        }
+
+        let ship = new Ship(length)
+
+        this.numberOfShip += 1
         
-        let length
-        //[4,7] vs [4,4]
-        if (array1[0] === array2[0]) {
+        if (row === true) {
+            for (let i = array[1]; i < array[1] + length; i++) {
+                this.board[array[0]][i] = ship
+            }
+        } 
 
-            if (array1[1] > array2[1]) {
-                length = (array1[1] - array2[1]) + 1
-                let ship = new Ship(length)
-                this.numberOfShip += 1
-                for (let i = array2[1]; i <= array1[1]; i++) {
-                    this.board[array1[0]][i] = ship
-                }
-            } else {
-                length = (array2[1] - array1[1]) + 1
-                let ship = new Ship(length)
-                this.numberOfShip += 1
-                for (let i = array1[1]; i <= array2[1]; i++) {
-                    this.board[array1[0]][i] = ship
+        if (row === false) {
+            for (let i = array[0]; i < array[0] + length; i++) {
+                this.board[i][array[1]] = ship
+            }
+        }
+
+        //funnction return list of array around the ship
+
+        return this.addSpace()
+    }
+
+    addSpace() {
+
+        let result = []
+
+        for (let i = 0 ; i < 10 ; i++) {
+            for (let j = 0 ; j < 10 ; j++) {
+                if (this.board[i][j] !== null && this.board[i][j] !== 'x') {
+                    result.push([i,j])
                 }
             }
         }
-        //[3,2] vs [8,2]    
-        if (array1[1] === array2[1]) {
 
-            if (array1[0] > array2[0]) {
-                length = (array1[0] - array2[0]) + 1
-                let ship = new Ship(length)
-                this.numberOfShip += 1
-                for (let i = array2[0]; i <= array1[0]; i++) {
-                    this.board[i][array1[1]] = ship
+        const option = [
+            [0,1], [1,0], [0,-1], [-1,0],
+            [1,1], [1,-1], [-1,1], [-1, -1]
+        ]
+
+        result.forEach(array => {
+            for (let i = 0 ; i < option.length ; i++) {
+                let newArray = [array[0] + option[i][0], array[1] + option[i][1]]
+        
+                if ((newArray[0] > -1 && newArray[0] < 11) && (newArray[1] > -1 && newArray[1] < 11)) {
+                    if (this.board[newArray[0]][newArray[1]] === null) {
+                        this.board[newArray[0]][newArray[1]] = 'x'
+                    }
+                    
                 }
-            } else {
-                length = (array2[0] - array1[0]) + 1
-                let ship = new Ship(length)
-                this.numberOfShip += 1
-                for (let i = array1[0]; i <= array2[0]; i++) {
-                    this.board[i][array1[1]] = ship
-                }
+                
             }
-        }
+        })
 
         return 
     }
